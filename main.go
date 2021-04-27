@@ -55,6 +55,13 @@ func main() {
 	flag.IntVar(&port, "port", 5000, "Port to serve")
 	flag.Parse()
 
+	// todo: hit loading...
+	confFile := "./config.cfg"
+	initConfig(confFile)
+	appConfig := appConfigMgr.config.Load().(*AppConfig)
+	go run()
+
+	serverList = appConfig.listenServer
 	tokens := strings.Split(serverList, ",")
 	for _, tok := range tokens {
 		serverUrl, err := url.Parse(tok)
