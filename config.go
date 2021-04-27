@@ -141,12 +141,12 @@ func (c *Config) reload() {
 	}
 }
 
-type Notifyer interface {
-	Callback(*Config)
-}
-
 func (c *Config) AddObserver(n Notifyer) {
 	c.notifyList = append(c.notifyList, n)
+}
+
+type Notifyer interface {
+	Callback(*Config)
 }
 
 func lineParse(lineNo *int, line *string, m *map[string]string) {
