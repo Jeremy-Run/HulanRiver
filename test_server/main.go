@@ -4,12 +4,17 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strconv"
 )
 
-func HelloHandler(w http.ResponseWriter, r *http.Request) {
-	_, err := fmt.Fprintf(w, "Hello World")
+var count = 1
+
+func PongHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("This is the " + strconv.Itoa(count) + "th visit")
+	count += 1
+	_, err := fmt.Fprintf(w, "Pong")
 	if err != nil {
-		fmt.Println("runtime error, info: ", err)
+		fmt.Println("Runtime error, info: ", err)
 	}
 	fmt.Println("The current request server port number is: ", os.Args[1])
 }
@@ -17,7 +22,7 @@ func HelloHandler(w http.ResponseWriter, r *http.Request) {
 func main() {
 	args := os.Args
 	addr := fmt.Sprintf(":%v", args[1])
-	http.HandleFunc("/hello", HelloHandler)
+	http.HandleFunc("/ping", PongHandler)
 	err := http.ListenAndServe(addr, nil)
 	if err != nil {
 		fmt.Println("ListenAndServe error, info: ", err)
