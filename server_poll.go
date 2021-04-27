@@ -58,6 +58,18 @@ func (s *ServerPool) HealthCheck() {
 	}
 }
 
+func healthCheck() {
+	t := time.NewTicker(time.Second * 10)
+	for {
+		select {
+		case <-t.C:
+			log.Println("Starting health check...")
+			serverPool.HealthCheck()
+			log.Println("Health check completed")
+		}
+	}
+}
+
 func isBackendAlive(u *url.URL) bool {
 	client := http.Client{
 		Timeout: time.Duration(3 * time.Second),

@@ -46,18 +46,6 @@ func lb(w http.ResponseWriter, r *http.Request) {
 	http.Error(w, "Service not available", http.StatusServiceUnavailable)
 }
 
-func healthCheck() {
-	t := time.NewTicker(time.Second * 10)
-	for {
-		select {
-		case <-t.C:
-			log.Println("Starting health check...")
-			serverPool.HealthCheck()
-			log.Println("Health check completed")
-		}
-	}
-}
-
 var serverPool ServerPool
 
 func main() {
