@@ -4,8 +4,8 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"log"
-	"net"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
@@ -119,18 +119,22 @@ func lb(w http.ResponseWriter, r *http.Request) {
 }
 
 func isBackendAlive(u *url.URL) bool {
-	timeout := 2 * time.Second
-	conn, err := net.DialTimeout("tcp", u.Host, timeout)
-	if err != nil {
-		log.Println("Site unreachable, error: ", err)
-		return false
+	client := http.Client{
+		Timeout: time.Duration(3 * time.Second),
 	}
-	_ = conn.Close()
-	return true
+
+	resp, _ := client.Get(u.String())
+	body, _ := ioutil.ReadAll(resp.Body)
+	if string(body) == "PONG" {
+		return true
+	}
+
+	return false
+
 }
 
 func healthCheck() {
-	t := time.NewTicker(time.Minute * 2)
+	t := time.NewTicker(time.Second * 10)
 	for {
 		select {
 		case <-t.C:
