@@ -12,7 +12,7 @@ var count = 1
 func PongHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("This is the " + strconv.Itoa(count) + "th visit")
 	count += 1
-	_, err := fmt.Fprintf(w, "Pong")
+	_, err := fmt.Fprintf(w, "PONG")
 	if err != nil {
 		fmt.Println("Runtime error, info: ", err)
 	}
