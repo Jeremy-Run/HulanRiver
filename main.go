@@ -2,6 +2,7 @@ package main
 
 import (
 	"HulanRiver/config"
+	"HulanRiver/src"
 	"context"
 	"flag"
 	"fmt"
@@ -47,7 +48,19 @@ func lb(w http.ResponseWriter, r *http.Request) {
 	http.Error(w, "Service not available", http.StatusServiceUnavailable)
 }
 
-var serverPool ServerPool
+var serverPool src.ServerPool
+
+func HealthCheck() {
+	t := time.NewTicker(time.Second * 100)
+	for {
+		select {
+		case <-t.C:
+			log.Println("Starting health check...")
+			serverPool.HealthCheck()
+			log.Println("Health check completed")
+		}
+	}
+}
 
 func main() {
 	var serverList string
@@ -92,7 +105,7 @@ func main() {
 			lb(writer, request.WithContext(ctx))
 		}
 
-		serverPool.AddBackend(&Backend{
+		serverPool.AddBackend(&src.Backend{
 			URL:          serverUrl,
 			Alive:        true,
 			ReverseProxy: proxy,
@@ -105,7 +118,7 @@ func main() {
 		Handler: http.HandlerFunc(lb),
 	}
 
-	go healthCheck()
+	go HealthCheck()
 
 	log.Printf("Load Balancer started at: %d\n", port)
 	if err := server.ListenAndServe(); err != nil {

@@ -1,4 +1,4 @@
-package main
+package src
 
 import (
 	"io/ioutil"
@@ -55,18 +55,6 @@ func (s *ServerPool) HealthCheck() {
 			status = "down"
 		}
 		log.Printf("%s [%s]\n", b.URL, status)
-	}
-}
-
-func healthCheck() {
-	t := time.NewTicker(time.Second * 100)
-	for {
-		select {
-		case <-t.C:
-			log.Println("Starting health check...")
-			serverPool.HealthCheck()
-			log.Println("Health check completed")
-		}
 	}
 }
 
