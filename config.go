@@ -44,7 +44,6 @@ func (c *Config) parse() (m map[string]string, err error) {
 		}
 		lineParse(&lineNo, &line, &m)
 	}
-
 	return
 }
 
@@ -98,6 +97,14 @@ func (c *Config) GetIStringDefault(key string, defaultStr string) (value string)
 		value = defaultStr
 		return
 	}
+	return
+}
+
+func (c *Config) GetBool(key string) (value bool, err error) {
+	c.mux.RLock()
+	defer c.mux.RUnlock()
+
+	value, err = strconv.ParseBool(c.data[key])
 
 	return
 }
@@ -203,6 +210,7 @@ func NewConfig(file string) (conf *Config, err error) {
 type AppConfig struct {
 	listenServer string
 	listenPath   string
+	isAutoReLoad bool
 }
 
 type AppConfigMgr struct {
@@ -253,6 +261,13 @@ func initConfig(file string) {
 		return
 	}
 	fmt.Println("listenPath: ", appConfig.listenPath)
+
+	appConfig.isAutoReLoad, err = conf.GetBool("isAutoReLoad")
+	if err != nil {
+		fmt.Printf("get isAutoReLoad err: %v\n", err)
+		return
+	}
+	fmt.Println("isAutoReLoad: ", appConfig.isAutoReLoad)
 
 	appConfigMgr.config.Store(&appConfig)
 	fmt.Println("first load success.")
