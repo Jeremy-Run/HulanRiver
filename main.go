@@ -63,9 +63,7 @@ func HealthCheck() {
 }
 
 func main() {
-	var serverList string
 	var port int
-	flag.StringVar(&serverList, "backends", "", "Load balanced backends, use commas to separate")
 	flag.IntVar(&port, "port", 5000, "Port to serve")
 	flag.Parse()
 
@@ -76,7 +74,7 @@ func main() {
 		go config.Run()
 	}
 
-	serverList = appConfig.ListenServer
+	serverList := appConfig.ListenServer
 	tokens := strings.Split(serverList, ",")
 	for _, tok := range tokens {
 		serverUrl, err := url.Parse(tok)
