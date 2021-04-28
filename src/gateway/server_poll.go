@@ -1,7 +1,7 @@
-package src
+package gateway
 
 import (
-	"HulanRiver/config"
+	"HulanRiver/src/config"
 	"io/ioutil"
 	"log"
 	"net/http"

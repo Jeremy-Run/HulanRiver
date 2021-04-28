@@ -1,8 +1,8 @@
 package main
 
 import (
-	"HulanRiver/config"
-	"HulanRiver/src"
+	"HulanRiver/src/config"
+	"HulanRiver/src/gateway"
 	"context"
 	"flag"
 	"fmt"
@@ -48,7 +48,7 @@ func lb(w http.ResponseWriter, r *http.Request) {
 	http.Error(w, "Service not available", http.StatusServiceUnavailable)
 }
 
-var serverPool src.ServerPool
+var serverPool gateway.ServerPool
 
 func HealthCheck() {
 	t := time.NewTicker(time.Second * 10)
@@ -107,7 +107,7 @@ func main() {
 			lb(writer, request.WithContext(ctx))
 		}
 
-		serverPool.AddBackend(&src.Backend{
+		serverPool.AddBackend(&gateway.Backend{
 			URL:          serverUrl,
 			Alive:        true,
 			ReverseProxy: proxy,

@@ -1,4 +1,4 @@
-package src
+package gateway
 
 import (
 	"net/http/httputil"
