@@ -280,6 +280,7 @@ func run() {
 
 		fmt.Println("listenServer:", appConfig.listenServer)
 		fmt.Println("listenPath:", appConfig.listenPath)
+		fmt.Println("isAutoReLoad:", appConfig.isAutoReLoad)
 		fmt.Printf("%v\n", "--------------------")
 		time.Sleep(5 * time.Second)
 	}

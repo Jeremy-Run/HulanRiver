@@ -59,7 +59,7 @@ func (s *ServerPool) HealthCheck() {
 }
 
 func healthCheck() {
-	t := time.NewTicker(time.Second * 10)
+	t := time.NewTicker(time.Second * 100)
 	for {
 		select {
 		case <-t.C:
