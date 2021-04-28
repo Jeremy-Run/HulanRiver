@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"strconv"
 	"strings"
@@ -115,14 +116,14 @@ func (c *Config) reload() {
 		func() {
 			f, err := os.Open(c.filename)
 			if err != nil {
-				fmt.Printf("open file error: %s\n", err)
+				log.Printf("open file error: %s\n", err)
 				return
 			}
 			defer f.Close()
 
 			fileInfo, err := f.Stat()
 			if err != nil {
-				fmt.Printf("stat file error:%s\n", err)
+				log.Printf("stat file error:%s\n", err)
 				return
 			}
 
@@ -130,7 +131,7 @@ func (c *Config) reload() {
 			if curModifyTime > c.lastModifyTime {
 				m, err := c.parse()
 				if err != nil {
-					fmt.Printf("parse config error:%v\n", err)
+					log.Printf("parse config error:%v\n", err)
 					return
 				}
 
@@ -166,13 +167,13 @@ func lineParse(lineNo *int, line *string, m *map[string]string) {
 
 	itemSlice := strings.Split(l, "=")
 	if len(itemSlice) == 0 {
-		fmt.Printf("invalid config, line: %d", lineNo)
+		log.Printf("invalid config, line: %d", lineNo)
 		return
 	}
 
 	key := strings.TrimSpace(itemSlice[0])
 	if len(key) == 0 {
-		fmt.Printf("invalid config, line: %d", lineNo)
+		log.Printf("invalid config, line: %d", lineNo)
 		return
 	}
 
@@ -195,7 +196,7 @@ func NewConfig(file string) (conf *Config, err error) {
 
 	m, err := conf.parse()
 	if err != nil {
-		fmt.Printf("parse conf error:%v\n", err)
+		log.Printf("parse conf error:%v\n", err)
 		return
 	}
 
@@ -223,14 +224,14 @@ func (a *AppConfigMgr) Callback(conf *Config) {
 	appConfig := &AppConfig{}
 	listenServer, err := conf.GetString("listenServer")
 	if err != nil {
-		fmt.Printf("get listenServer err: %v\n", err)
+		log.Printf("get listenServer err: %v\n", err)
 		return
 	}
 	appConfig.listenServer = listenServer
 
 	listenPath, err := conf.GetString("listenPath")
 	if err != nil {
-		fmt.Printf("get listenPath err: %v\n", err)
+		log.Printf("get listenPath err: %v\n", err)
 		return
 	}
 	appConfig.listenPath = listenPath
@@ -241,7 +242,7 @@ func (a *AppConfigMgr) Callback(conf *Config) {
 func initConfig(file string) {
 	conf, err := NewConfig(file)
 	if err != nil {
-		fmt.Printf("read config file err: %v\n", err)
+		log.Printf("read config file err: %v\n", err)
 		return
 	}
 
@@ -250,27 +251,27 @@ func initConfig(file string) {
 	var appConfig AppConfig
 	appConfig.listenServer, err = conf.GetString("listenServer")
 	if err != nil {
-		fmt.Printf("get listenServer err: %v\n", err)
+		log.Printf("get listenServer err: %v\n", err)
 		return
 	}
-	fmt.Println("listenServer: ", appConfig.listenServer)
+	log.Println("listenServer: ", appConfig.listenServer)
 
 	appConfig.listenPath, err = conf.GetString("listenPath")
 	if err != nil {
-		fmt.Printf("get listenPath err: %v\n", err)
+		log.Printf("get listenPath err: %v\n", err)
 		return
 	}
-	fmt.Println("listenPath: ", appConfig.listenPath)
+	log.Println("listenPath: ", appConfig.listenPath)
 
 	appConfig.isAutoReLoad, err = conf.GetBool("isAutoReLoad")
 	if err != nil {
-		fmt.Printf("get isAutoReLoad err: %v\n", err)
+		log.Printf("get isAutoReLoad err: %v\n", err)
 		return
 	}
-	fmt.Println("isAutoReLoad: ", appConfig.isAutoReLoad)
+	log.Println("isAutoReLoad: ", appConfig.isAutoReLoad)
 
 	appConfigMgr.config.Store(&appConfig)
-	fmt.Println("first load success.")
+	log.Println("first load success.")
 
 }
 
@@ -278,10 +279,10 @@ func run() {
 	for {
 		time.Sleep(5 * time.Second)
 		appConfig := appConfigMgr.config.Load().(*AppConfig)
-		fmt.Printf("%v\n", "--------- reload config start ---------")
-		fmt.Println("listenServer:", appConfig.listenServer)
-		fmt.Println("listenPath:", appConfig.listenPath)
-		fmt.Println("isAutoReLoad:", appConfig.isAutoReLoad)
-		fmt.Printf("%v\n", "--------- reload config stop ---------")
+		log.Printf("%v\n", "--------- reload config start ---------")
+		log.Println("listenServer:", appConfig.listenServer)
+		log.Println("listenPath:", appConfig.listenPath)
+		log.Println("isAutoReLoad:", appConfig.isAutoReLoad)
+		log.Printf("%v\n", "--------- reload config stop ---------")
 	}
 }
