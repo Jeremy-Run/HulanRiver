@@ -69,11 +69,8 @@ func GetTokensByConfig() (tokens []string) {
 	if appConfig.IsAutoReLoad {
 		go config.Run()
 	}
-	listenServer := strings.Split(appConfig.ListenServer, ",")
+	tokens = strings.Split(appConfig.ListenServer, ",")
 
-	for _, host := range listenServer {
-		tokens = append(tokens, host+appConfig.ListenPath)
-	}
 	return
 }
 

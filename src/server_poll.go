@@ -1,6 +1,7 @@
 package src
 
 import (
+	"HulanRiver/config"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -62,7 +63,9 @@ func isBackendAlive(u *url.URL) bool {
 	client := http.Client{
 		Timeout: time.Duration(3 * time.Second),
 	}
-	resp, err := client.Get(u.String())
+	appConfig := config.AppConfigManager.Config.Load().(*config.AppConfig)
+
+	resp, err := client.Get(u.String() + appConfig.ListenPath)
 	if err != nil {
 		return false
 	}
