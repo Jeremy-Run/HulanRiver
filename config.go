@@ -276,12 +276,12 @@ func initConfig(file string) {
 
 func run() {
 	for {
+		time.Sleep(5 * time.Second)
 		appConfig := appConfigMgr.config.Load().(*AppConfig)
-
+		fmt.Printf("%v\n", "--------- reload config start ---------")
 		fmt.Println("listenServer:", appConfig.listenServer)
 		fmt.Println("listenPath:", appConfig.listenPath)
 		fmt.Println("isAutoReLoad:", appConfig.isAutoReLoad)
-		fmt.Printf("%v\n", "--------------------")
-		time.Sleep(5 * time.Second)
+		fmt.Printf("%v\n", "--------- reload config stop ---------")
 	}
 }
