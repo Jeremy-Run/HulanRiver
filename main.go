@@ -62,20 +62,27 @@ func HealthCheck() {
 	}
 }
 
-func main() {
-	var port int
-	flag.IntVar(&port, "port", 5000, "Port to serve")
-	flag.Parse()
-
+func GetTokensByConfig() (tokens []string) {
 	confFile := "./config/config.cfg"
 	config.InitConfig(confFile)
 	appConfig := config.AppConfigManager.Config.Load().(*config.AppConfig)
 	if appConfig.IsAutoReLoad {
 		go config.Run()
 	}
+	listenServer := strings.Split(appConfig.ListenServer, ",")
 
-	serverList := appConfig.ListenServer
-	tokens := strings.Split(serverList, ",")
+	for _, host := range listenServer {
+		tokens = append(tokens, host+appConfig.ListenPath)
+	}
+	return
+}
+
+func main() {
+	var port int
+	flag.IntVar(&port, "port", 5000, "Port to serve")
+	flag.Parse()
+
+	tokens := GetTokensByConfig()
 	for _, tok := range tokens {
 		serverUrl, err := url.Parse(tok)
 		if err != nil {
