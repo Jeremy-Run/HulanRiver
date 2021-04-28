@@ -1,6 +1,7 @@
 package main
 
 import (
+	"HulanRiver/config"
 	"context"
 	"flag"
 	"fmt"
@@ -55,14 +56,14 @@ func main() {
 	flag.IntVar(&port, "port", 5000, "Port to serve")
 	flag.Parse()
 
-	confFile := "./config.cfg"
-	initConfig(confFile)
-	appConfig := appConfigMgr.config.Load().(*AppConfig)
-	if appConfig.isAutoReLoad {
-		go run()
+	confFile := "./config/config.cfg"
+	config.InitConfig(confFile)
+	appConfig := config.AppConfigManager.Config.Load().(*config.AppConfig)
+	if appConfig.IsAutoReLoad {
+		go config.Run()
 	}
 
-	serverList = appConfig.listenServer
+	serverList = appConfig.ListenServer
 	tokens := strings.Split(serverList, ",")
 	for _, tok := range tokens {
 		serverUrl, err := url.Parse(tok)

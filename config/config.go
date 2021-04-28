@@ -1,4 +1,4 @@
-package main
+package config
 
 import (
 	"bufio"
@@ -209,16 +209,16 @@ func NewConfig(file string) (conf *Config, err error) {
 }
 
 type AppConfig struct {
-	listenServer string
-	listenPath   string
-	isAutoReLoad bool
+	ListenServer string
+	ListenPath   string
+	IsAutoReLoad bool
 }
 
 type AppConfigMgr struct {
-	config atomic.Value
+	Config atomic.Value
 }
 
-var appConfigMgr = &AppConfigMgr{}
+var AppConfigManager = &AppConfigMgr{}
 
 func (a *AppConfigMgr) Callback(conf *Config) {
 	appConfig := &AppConfig{}
@@ -227,62 +227,62 @@ func (a *AppConfigMgr) Callback(conf *Config) {
 		log.Printf("get listenServer err: %v\n", err)
 		return
 	}
-	appConfig.listenServer = listenServer
+	appConfig.ListenServer = listenServer
 
 	listenPath, err := conf.GetString("listenPath")
 	if err != nil {
 		log.Printf("get listenPath err: %v\n", err)
 		return
 	}
-	appConfig.listenPath = listenPath
+	appConfig.ListenPath = listenPath
 
-	appConfigMgr.config.Store(appConfig)
+	AppConfigManager.Config.Store(appConfig)
 }
 
-func initConfig(file string) {
+func InitConfig(file string) {
 	conf, err := NewConfig(file)
 	if err != nil {
 		log.Printf("read config file err: %v\n", err)
 		return
 	}
 
-	conf.AddObserver(appConfigMgr)
+	conf.AddObserver(AppConfigManager)
 
 	var appConfig AppConfig
-	appConfig.listenServer, err = conf.GetString("listenServer")
+	appConfig.ListenServer, err = conf.GetString("listenServer")
 	if err != nil {
 		log.Printf("get listenServer err: %v\n", err)
 		return
 	}
-	log.Println("listenServer: ", appConfig.listenServer)
+	log.Println("listenServer: ", appConfig.ListenServer)
 
-	appConfig.listenPath, err = conf.GetString("listenPath")
+	appConfig.ListenPath, err = conf.GetString("listenPath")
 	if err != nil {
 		log.Printf("get listenPath err: %v\n", err)
 		return
 	}
-	log.Println("listenPath: ", appConfig.listenPath)
+	log.Println("listenPath: ", appConfig.ListenPath)
 
-	appConfig.isAutoReLoad, err = conf.GetBool("isAutoReLoad")
+	appConfig.IsAutoReLoad, err = conf.GetBool("isAutoReLoad")
 	if err != nil {
 		log.Printf("get isAutoReLoad err: %v\n", err)
 		return
 	}
-	log.Println("isAutoReLoad: ", appConfig.isAutoReLoad)
+	log.Println("isAutoReLoad: ", appConfig.IsAutoReLoad)
 
-	appConfigMgr.config.Store(&appConfig)
+	AppConfigManager.Config.Store(&appConfig)
 	log.Println("first load success.")
 
 }
 
-func run() {
+func Run() {
 	for {
 		time.Sleep(5 * time.Second)
-		appConfig := appConfigMgr.config.Load().(*AppConfig)
+		appConfig := AppConfigManager.Config.Load().(*AppConfig)
 		log.Printf("%v\n", "--------- reload config start ---------")
-		log.Println("listenServer:", appConfig.listenServer)
-		log.Println("listenPath:", appConfig.listenPath)
-		log.Println("isAutoReLoad:", appConfig.isAutoReLoad)
+		log.Println("listenServer:", appConfig.ListenServer)
+		log.Println("listenPath:", appConfig.ListenPath)
+		log.Println("isAutoReLoad:", appConfig.IsAutoReLoad)
 		log.Printf("%v\n", "--------- reload config stop ---------")
 	}
 }
