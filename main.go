@@ -51,7 +51,7 @@ func lb(w http.ResponseWriter, r *http.Request) {
 var serverPool src.ServerPool
 
 func HealthCheck() {
-	t := time.NewTicker(time.Second * 100)
+	t := time.NewTicker(time.Second * 10)
 	for {
 		select {
 		case <-t.C:

@@ -62,7 +62,14 @@ func isBackendAlive(u *url.URL) bool {
 	client := http.Client{
 		Timeout: time.Duration(3 * time.Second),
 	}
-	resp, _ := client.Get(u.String())
+	resp, err := client.Get(u.String())
+	if err != nil {
+		return false
+	}
+	if resp == nil {
+		return false
+	}
+
 	body, _ := ioutil.ReadAll(resp.Body)
 	if string(body) == "PONG" {
 		return true
