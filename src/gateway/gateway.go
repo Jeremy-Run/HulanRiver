@@ -34,9 +34,6 @@ func GetTokensByConfig() (tokens []string) {
 	confFile := "./src/config/config.cfg"
 	config.InitConfig(confFile)
 	appConfig := config.AppConfigManager.Config.Load().(*config.AppConfig)
-	if appConfig.IsAutoReLoad {
-		go config.Run()
-	}
 	tokens = strings.Split(appConfig.ListenServer, ",")
 	return
 }

@@ -203,18 +203,14 @@ func NewConfig(file string) (conf *Config, err error) {
 	conf.data = m
 	conf.mux.Unlock()
 
-	go conf.reload()
-	return
-}
-
-func Run() {
-	for {
-		time.Sleep(5 * time.Second)
-		appConfig := AppConfigManager.Config.Load().(*AppConfig)
-		log.Printf("%v\n", "--------- reload config start ---------")
-		log.Println("listenServer:", appConfig.ListenServer)
-		log.Println("listenPath:", appConfig.ListenPath)
-		log.Println("isAutoReLoad:", appConfig.IsAutoReLoad)
-		log.Printf("%v\n", "--------- reload config stop ---------")
+	isAutoReLoad, err := conf.GetBool("isAutoReLoad")
+	if err != nil {
+		log.Printf("get 'isAutoReLoad' happened error: %v\n", err)
+		return
 	}
+
+	if isAutoReLoad {
+		go conf.reload()
+	}
+	return
 }
