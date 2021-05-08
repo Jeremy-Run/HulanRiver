@@ -1,7 +1,15 @@
 package main
 
-import "HulanRiver/src/gateway"
+import (
+	"HulanRiver/src/gateway"
+	"flag"
+)
 
 func main() {
-	gateway.Run()
+	var port int
+	flag.IntVar(&port, "port", 5000, "Port to serve")
+	flag.Parse()
+
+	gateway.Run(port)
+
 }

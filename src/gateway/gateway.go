@@ -3,7 +3,6 @@ package gateway
 import (
 	"HulanRiver/src/config"
 	"context"
-	"flag"
 	"fmt"
 	"log"
 	"net/http"
@@ -38,11 +37,7 @@ func GetTokensByConfig() (tokens []string) {
 	return
 }
 
-func Run() {
-	var port int
-	flag.IntVar(&port, "port", 5000, "Port to serve")
-	flag.Parse()
-
+func Run(port int) {
 	tokens := GetTokensByConfig()
 	for _, tok := range tokens {
 		serverUrl, err := url.Parse(tok)
