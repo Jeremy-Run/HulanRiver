@@ -5,11 +5,11 @@ import (
 	"flag"
 )
 
+var port = flag.Int("port", 5000, "Port to Server")
+
 func main() {
-	var port int
-	flag.IntVar(&port, "port", 5000, "Port to serve")
 	flag.Parse()
 
-	gateway.Run(port)
+	gateway.Run(*port)
 
 }
